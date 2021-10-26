@@ -1,0 +1,33 @@
+---
+title: "Survey_Temp_Logger_Cleanup"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Cleanup of HOBO Survey Temperature Loggers (white loggers)
+
+Trimming (cutting off rows where logger was not in water)
+
+Clear the workspace and close all graphic devices (two right panels in RStudio).  Bring in the tidyverse package.
+
+```{r}
+rm(list = ls())
+graphics.off()
+library(tidyverse)
+```
+
+Check the working directory and change if needed.
+
+```{r}
+
+```
+
+AA James Brown Slough
+
+```{r}
+
+```
+
