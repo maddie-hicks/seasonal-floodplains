@@ -10,24 +10,24 @@ The folders within this repository include:
 * Figures
 * Workflow
 
-##Data
+## Data
 
-###Raw
+### Raw
 * .csv files of raw data (*i.e., survey data, logger data, connectivity data*) 
 
-###Derived
+### Derived
 * .csv files produced from cleanup coding
 
-##Code
+## Code
 
-###Cleanup
+### Cleanup
 * R files (.R or .Rmd) that cleanup raw data (*i.e., trimming logger data, merging datasets*)
 
-###Analysis
+### Analysis
 * R files (.R or .Rmd) that perform data analysis (*i.e., creating time series plots)
 
-##Figures
+## Figures
 * Figures produced from data analysis (*i.e, time series plots)
 
-##Workflow
+## Workflow
 * .docx file with breakdown of all non-reproducible (i.e., non-coded) actions taken since the beginning of the project
