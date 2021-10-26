@@ -24,10 +24,10 @@ The folders within this repository include:
 * R files (.R or .Rmd) that cleanup raw data (*i.e., trimming logger data, merging datasets*)
 
 ### Analysis
-* R files (.R or .Rmd) that perform data analysis (*i.e., creating time series plots)
+* R files (.R or .Rmd) that perform data analysis (*i.e., creating time series plots*)
 
 ## Figures
-* Figures produced from data analysis (*i.e, time series plots)
+* Figures produced from data analysis (*i.e, time series plots*)
 
 ## Workflow
-* .docx file with breakdown of all non-reproducible (i.e., non-coded) actions taken since the beginning of the project
+* .docx file with breakdown of all non-reproducible (*i.e., non-coded*) actions taken since the beginning of the project
