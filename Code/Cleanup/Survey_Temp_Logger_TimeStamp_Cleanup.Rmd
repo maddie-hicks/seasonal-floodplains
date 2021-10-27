@@ -1,0 +1,34 @@
+---
+title: "Survey_Temp_Logger_TimeStamp_Cleanup"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Read in data
+
+```{r}
+setwd("C:\\Users\\maddi\\Desktop\\Box Sync\\Thesis\\Chinook Seasonal Floodplain Habitat\\GitHub\\seasonal-floodplains\\Code")
+getwd()
+```
+Manually deleted the first row in notepad
+
+```{r}
+AA_Survey_Temp_06092021 <- read.csv("..\\Data\\Raw Data\\Survey Temperature Logger Data\\21099530_06092021_AA_James_Brown_Slough.csv")
+```
+
+```{r}
+
+```
+
+```{r}
+new_date <- strptime(AA_Survey_Temp_06092021$Date.Time..GMT.07.00,
+                     format = "%m/%d/%y %H:%M:%S")
+```
+
+```{r}
+head(new_date) 
+```
+
