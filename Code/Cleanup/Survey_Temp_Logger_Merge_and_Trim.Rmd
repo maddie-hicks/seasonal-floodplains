@@ -77,6 +77,44 @@ AA_Tracklog_09212021$ltime <- AA_Tracklog_09212021$ltime %>%
 
 DATASET MERGING
 
-In order to merge the two datasets
+Now that both datasets have a column with date-time data in the same format, we can merge them using a rolling join in data.table.  As of now, dplyr doesn't have a rolling join function so we have to use data.table instead.  Since joining two datasets causes one of columns to be dropped we will create a new column in each dataset called Join_DateTime.
 
-Slice rows where logger not in water.
+```{r}
+AA_Survey_Temp_09212021 <- AA_Survey_Temp_09212021 %>%
+  mutate(Join_DateTime = Date_Time)
+AA_Tracklog_09212021 <- AA_Tracklog_09212021 %>%
+  mutate(Join_DateTime = ltime)
+```
+
+Since we imported the survey temperature data and the GPS data as tibbles, we have to convert it to a data.table using setDT().  Then set the key using setkey() to assign the column to do the rolling join on (Join_DateTime).
+
+```{r}
+setDT(AA_Survey_Temp_09212021)
+setDT(AA_Tracklog_09212021)
+setkey(AA_Survey_Temp_09212021, Join_DateTime)
+setkey(AA_Tracklog_09212021, Join_DateTime)
+```
+
+Merge the datasets in a rolling join.
+
+```{r}
+AA_09212021_Merged <- AA_Survey_Temp_09212021[AA_Tracklog_09212021, roll = TRUE]
+```
+
+Since the produced dataset is a data.table, convert it back to a tibble for more data tidying.
+
+```{r}
+setDF(AA_09212021_Merged)
+AA_09212021_Merged <- as_tibble(AA_09212021_Merged)
+```
+
+DATASET TRIMMING
+
+Using the 
+
+```{r}
+AA_09212021_Merged_Trim <- AA_09212021_Merged %>%
+  slice(c(34:512, 537:704)) %>%
+  select(Join_DateTime, Temp_C, Latitude, Longitude)
+```
+
