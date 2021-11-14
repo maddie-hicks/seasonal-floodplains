@@ -1,0 +1,82 @@
+---
+title: "Survey Temp Logger Merge and Trim"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+ - Cleanup of HOBO survey temperature loggers (white loggers) with column header name adjustment and date-time formatting
+ - Cleanup of GPS tracklog data with column header name adjustment and date-time formatting
+ - Merge survey temperature data with tracklog data for spatial temperature map
+ - Trim data so only contains rows where survey temperature logger was in the water
+
+Clear the workspace and close all graphic devices (two right panels in RStudio).  Bring in the tidyverse package.
+
+```{r}
+rm(list = ls())
+graphics.off()
+library(tidyverse)
+library(lubridate)
+library(data.table)
+```
+
+Check the working directory and change if needed.
+
+```{r}
+getwd()
+```
+
+SURVEY TEMP LOGGER DATA HEADER CLEANUP AND DATE-TIME FORMATTING
+
+Read in the .csv with survey temperature logger data for each survey. Use "..\\" to back out of the working directory and go into the "Data" folder where the survey temperature logger data is.  Use read_csv as part of the readr package in tidyverse so that the data is automatically made into a tibble instead of a dataframe.
+
+
+```{r}
+AA_Survey_Temp_09212021 <- read_csv("..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\21099530_09212021_AA_James_Brown_Slough_READONLY.csv")
+```
+Check the data type for each column.  Date-Time is currently assigned as a character (chr) and Temperature is currently assigned as a "double class" (dbl) which are numeric values with decimal points.
+
+```{r}
+AA_Survey_Temp_09212021 %>% 
+  head()
+```
+
+First, change the names of column headers into something more manageable using rename().
+
+```{r}
+AA_Survey_Temp_09212021 <- AA_Survey_Temp_09212021 %>%
+  rename("Date_Time" = "Date Time, GMT-07:00", "Temp_C" = "Temp, °C (LGR S/N: 21099530, SEN S/N: 21099530)")
+```
+
+Next, change the data type for Date-Time using the lubridate package in tidyverse using as_datetime().  Since the logger data is not in a standard format, you must specify the format that it is in so that R can recognize it.
+
+```{r}
+AA_Survey_Temp_09212021$Date_Time <- AA_Survey_Temp_09212021$Date_Time %>%
+  as_datetime(format = "%m/%d/%y %H:%M:%S")
+```
+
+
+
+TRACKLOG DATA HEADER CLEANUP AND DATE-TIME FORMATTING
+
+Now that the survey temperature logger data is cleaned up, read in the .txt with the tracklog data using read_tsv.
+
+```{r}
+AA_Tracklog_09212021 <- read_tsv("..\\..\\Data\\Raw Data\\Tracklog Data\\AA_James_Brown_Slough_Tracklog_09212021_READONLY.txt")
+```
+
+The column header names look okay so we don't need to rename them.  Next, change the data type for ltime using the lubridate package in tidyverse using as_datetime() like we did with the survey temperature data.  The GPS data is in a standard format so no need to specify the format.
+
+```{r}
+AA_Tracklog_09212021$ltime <- AA_Tracklog_09212021$ltime %>%
+  as_datetime()
+```
+
+
+DATASET MERGING
+
+In order to merge the two datasets
+
+Slice rows where logger not in water.
