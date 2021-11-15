@@ -1,0 +1,44 @@
+---
+title: "Long Term Logger DateTime Cleanup"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+ - Convert the DO logger Date_Time data into a date-time format
+ - Combine the level logger Date and Time columns into one Date_Time column and convert into date-time format
+
+Clear the workspace and close all graphic devices (two right panels in RStudio).  Bring in necessary packages.
+
+```{r}
+rm(list = ls())
+graphics.off()
+library(tidyverse)
+library(lubridate)
+```
+
+Check the working directory and change if needed.
+
+```{r}
+getwd()
+```
+
+
+DO LOGGER DATE-TIME FORMATTING
+
+Read in the .csv with DO logger data for each site.
+
+```{r}
+AA_DO_Logger <- read_csv("..\\..\\Data\\Raw Data\\DO Logger Data\\DO_Logger_Data_AA_James_Brown_READONLY.csv")
+```
+
+Check the data type for each column.  Date-Time is currently assigned as a character (chr) and DO is currently assigned as a "double class" (dbl) which are numeric values with decimal points.
+
+```{r}
+AA_DO_Logger %>%
+  head()
+```
+
+

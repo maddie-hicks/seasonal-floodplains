@@ -1,0 +1,19 @@
+---
+title: "Stacked Time Series Plots"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+ - Create stacked time series plots from long term logger data (DO logger, level logger, and temperature logger) and connectivity data.
+
+Clear the workspace and close all graphic devices (two right panels in RStudio).  Bring in necessary packages.
+
+```{r}
+rm(list = ls())
+graphics.off()
+library(ggplot2)
+```
+

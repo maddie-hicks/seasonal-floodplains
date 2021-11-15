@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
  - Trim data so only contains rows where survey temperature logger was in the water
  - Make functions of this process to apply to all surveys conducted
 
-Clear the workspace and close all graphic devices (two right panels in RStudio).  Bring in the tidyverse package.
+Clear the workspace and close all graphic devices (two right panels in RStudio).  Bring in necessary packages.
 
 ```{r}
 rm(list = ls())
@@ -167,4 +167,9 @@ Merging, converting back to a tibble, trimming, and exporting as a .csv can be d
 APPLYING FUNCTIONS
 
 Apply these function to each survey temperature logger data .csv file and its corresponding tracklog .txt file starting after AAB RBK Sauk on 07/13/2021.  Make sure to ignore surveys where the tracklog did not record seconds because a rolling join is not possible.
+
+
+
+
+
 
