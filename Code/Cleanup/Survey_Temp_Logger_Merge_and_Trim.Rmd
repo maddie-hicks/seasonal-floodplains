@@ -51,11 +51,11 @@ AA_Survey_Temp_09212021 <- AA_Survey_Temp_09212021 %>%
   rename("Date_Time" = "Date Time, GMT-07:00", "Temp_C" = "Temp, °C (LGR S/N: 21099530, SEN S/N: 21099530)")
 ```
 
-Next, change the data type for Date-Time using the lubridate package in tidyverse using as_datetime().  Since the logger data is not in a standard format, you must specify the format that it is in so that R can recognize it.
+Next, parse the Date_Time column (identify and convert into POSIXct format which is readable by R) using the lubridate package in tidyverse.  When parsing date-time data you must specify the format that the data is currently in.  In this case, it is mdy_hms.
 
 ```{r}
 AA_Survey_Temp_09212021$Date_Time <- AA_Survey_Temp_09212021$Date_Time %>%
-  as_datetime(format = "%m/%d/%y %H:%M:%S")
+  mdy_hms()
 ```
 
 
@@ -67,17 +67,17 @@ Now that the survey temperature logger data is cleaned up, read in the .txt with
 AA_Tracklog_09212021 <- read_tsv("..\\..\\Data\\Raw Data\\Tracklog Data\\AA_James_Brown_Slough_Tracklog_09212021_READONLY.txt")
 ```
 
-The column header names look okay so we don't need to rename them.  Next, change the data type for ltime using the lubridate package in tidyverse using as_datetime() like we did with the survey temperature data.  The GPS data is in a standard format so no need to specify the format.
+The column header names look okay so we don't need to rename them.  Next, parse the ltime column using the lubridate package in tidyverse like we did for the survey temperature data.  When parsing date-time data you must specify the format that the data is currently in.  In this case, it is ymd_hms, again.
 
 ```{r}
 AA_Tracklog_09212021$ltime <- AA_Tracklog_09212021$ltime %>%
-  as_datetime()
+  ymd_hms()
 ```
 
 
 DATASET MERGING
 
-Now that both datasets have a column with date-time data in the same format, we can merge them using a rolling join in data.table.  We are using a rolling join because the intervals on the survey temperature logger and the GPS were slightly different.  As of now, dplyr doesn't have a rolling join function so we have to use data.table instead.  Since joining two datasets causes one of columns to be dropped we will create a new column in each dataset called Join_DateTime.
+Now that both datasets have a column with date-time (POSIXct) data in the same format, we can merge them using a rolling join in data.table.  We are using a rolling join because the intervals on the survey temperature logger and the GPS were slightly different.  As of now, dplyr doesn't have a rolling join function so we have to use data.table instead.  Since joining two datasets causes one of columns to be dropped we will create a new column in each dataset called Join_DateTime.
 
 ```{r}
 AA_Survey_Temp_09212021 <- AA_Survey_Temp_09212021 %>%
@@ -138,7 +138,7 @@ AAB_Survey_Temp_07132021 <- AAB_Survey_Temp_07132021 %>%
   rename("Date_Time" = 2, "Temp_C" = 3)
 
 AAB_Survey_Temp_07132021$Date_Time <- AAB_Survey_Temp_07132021$Date_Time %>%
-  as_datetime(format = "%m/%d/%y %H:%M:%S")
+  mdy_hms()
 
 AAB_Survey_Temp_07132021 %>%
   mutate(Join_DateTime = Date_Time) %>%
@@ -146,13 +146,55 @@ AAB_Survey_Temp_07132021 %>%
   setkey(Join_DateTime)
 ```
 
+```{r}
+prepjoin <- function(filename){
+
+# Read in csv as tibble and do some things to it
+  x <- read_csv(filename)
+  
+  x <- x %>% 
+    rename("Date_Time" = 2, "Temp_C" = 3)
+  
+  x$Date_Time <- x$Date_Time %>% 
+    mdy_hms()
+  
+  x %>% 
+    mutate(Join_DateTime = Date_Time) %>%
+    setDT() %>%
+    setkey(Join_DateTime)
+  
+  # Figure out what output name should be based on filename
+  y <- strsplit(filename, "_")[[1]]
+  sitecode <- y[3]
+  date <- y[2]
+  name <- paste(sitecode, "Survey_Temp", date, sep ="_")
+  
+  
+  # Return tibble/data.table (date_thing) and suggested name
+  return(list(data_thing = x, suggested_name = name))
+}
+
+
+
+#example call
+
+filename <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\21099530_07132021_AAB_RBK_Sauk_READONLY.csv"
+
+out <- prepjoin(filename)
+
+#This assigns an object in the global environment named the suggested name that is the data thing (produced tibble/data.table from the function)
+assign(out$suggested_name, out$data_thing)
+
+```
+
+
 Function for getting tracklog data read to merge (date-time formatting, copying ltime column into Join_DateTime, converting it to a data.table, and setting the key).
 
 ```{r}
 AAB_Tracklog_07132021 <- read_tsv("..\\..\\Data\\Raw Data\\Tracklog Data\\AAB_RBK_Sauk_Tracklog_07132021_READONLY.txt")
 
 AAB_Tracklog_07132021$ltime <- AAB_Tracklog_07132021$ltime %>%
-  as_datetime()
+  ymd_hms()
   
 AAB_Tracklog_07132021 <- AAB_Tracklog_07132021 %>%        
   mutate(Join_DateTime = ltime) %>%

@@ -34,11 +34,40 @@ Read in the .csv with DO logger data for each site.
 AA_DO_Logger <- read_csv("..\\..\\Data\\Raw Data\\DO Logger Data\\DO_Logger_Data_AA_James_Brown_READONLY.csv")
 ```
 
-Check the data type for each column.  Date-Time is currently assigned as a character (chr) and DO is currently assigned as a "double class" (dbl) which are numeric values with decimal points.
+Check the data type for each column.  Date-Time is currently assigned as a character (chr) and DO is currently assigned as a "double class" (dbl) which are numeric values with decimal points.  There are also no seconds in the Date_Time column.
 
 ```{r}
 AA_DO_Logger %>%
   head()
 ```
 
+Parse the Date_Time column (identify and convert into POSIXct format which is readable by R) using the lubridate package in tidyverse.  When parsing date-time data you must specify the format that the data is currently in.  In this case, it is mdy_hm (there is no seconds data).
+
+```{r}
+AA_DO_Logger$Date_Time <- AA_DO_Logger$Date_Time %>%
+  mdy_hm()
+```
+
+Export AA_DO_Logger as a .csv in the Derived Data folder in GitHub.  Using # so don't export a new .csv every time the code is run.  Just delete the # when you want to export.
+
+```{r}
+#AA_DO_Logger %>%
+  #write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\AA_DO_Logger_DateTime.csv")
+```
+
+
+LEVEL LOGGER DATE_TIME FORMATTING
+
+Read in the .csv with level logger (and temperature) data for each site.
+
+```{r}
+AA_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_AA_James_Brown_READONLY.csv")
+```
+
+Now unite the Date and Time columns into one string.
+
+```{r}
+AA_Level_Logger <- AA_Level_Logger %>%
+  unite()
+```
 

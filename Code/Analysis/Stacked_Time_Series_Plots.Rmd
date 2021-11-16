@@ -17,3 +17,8 @@ graphics.off()
 library(ggplot2)
 ```
 
+```{r}
+ggplot(AA_DO_Logger, aes(x = Date_Time, y = DO_mgL)) +
+  geom_line()
+```
+
