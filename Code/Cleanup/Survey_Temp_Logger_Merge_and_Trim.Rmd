@@ -35,7 +35,7 @@ Read in the .csv with survey temperature logger data for each survey. Use "..\\"
 
 
 ```{r}
-AA_Survey_Temp_09212021 <- read_csv("..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\21099530_09212021_AA_James_Brown_Slough_READONLY.csv")
+AA_Survey_Temp_09212021 <- read_csv("..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AA_09212021_James_Brown_Slough_READONLY.csv")
 ```
 Check the data type for each column.  Date-Time is currently assigned as a character (chr) and Temperature is currently assigned as a "double class" (dbl) which are numeric values with decimal points.
 
@@ -67,7 +67,7 @@ Now that the survey temperature logger data is cleaned up, read in the .txt with
 AA_Tracklog_09212021 <- read_tsv("..\\..\\Data\\Raw Data\\Tracklog Data\\AA_James_Brown_Slough_Tracklog_09212021_READONLY.txt")
 ```
 
-The column header names look okay so we don't need to rename them.  Next, parse the ltime column using the lubridate package in tidyverse like we did for the survey temperature data.  When parsing date-time data you must specify the format that the data is currently in.  In this case, it is ymd_hms, again.
+The column header names look okay so we don't need to rename them.  Next, parse the ltime column using the lubridate package in tidyverse like we did for the survey temperature data.  When parsing date-time data you must specify the format that the data is currently in.  In this case, it is ymd_hms.
 
 ```{r}
 AA_Tracklog_09212021$ltime <- AA_Tracklog_09212021$ltime %>%
@@ -122,14 +122,14 @@ AA_09212021_Merged_Trim <- AA_09212021_Merged %>%
 Export AA_09212021_Merged_Trim as a .csv in the Derived Data folder in GitHub.  Using # so don't export a new .csv every time the code is run.  Just delete the # when you want to export.
 
 ```{r}
-#AA_09212021_Merged_Trim %>%
-#write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AA_09212021_Merged_Trim.csv")
+# AA_09212021_Merged_Trim %>%
+# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AA_09212021_Merged_Trim.csv")
 ```
 
 
 CREATING FUNCTIONS
 
-Function for getting survey temperature logger data ready to merge (header name cleanup, date-time formatting, copying Date_Time column into Join_DateTime, converting it to a data.table, and setting the key).
+Below if the workflow for getting survey temperature logger data ready to merge (header name cleanup, date-time formatting, copying Date_Time column into Join_DateTime, converting it to a data.table, and setting the key).
 
 ```{r}
 AAB_Survey_Temp_07132021 <- read_csv("..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\21099530_07132021_AAB_RBK_Sauk_READONLY.csv")
@@ -146,46 +146,55 @@ AAB_Survey_Temp_07132021 %>%
   setkey(Join_DateTime)
 ```
 
-```{r}
-prepjoin <- function(filename){
+This is the function created from that workflow.
 
-# Read in csv as tibble and do some things to it
-  x <- read_csv(filename)
+```{r}
+Survey_Temp_Prep_Join_Function <- function(Survey_Temp_File_Name){
+
+  # This is the same workflow as in the code chunk above
   
-  x <- x %>% 
+  Survey_Temp_Data <- read_csv(Survey_Temp_File_Name)
+  
+  Survey_Temp_Data <- Survey_Temp_Data %>% 
     rename("Date_Time" = 2, "Temp_C" = 3)
   
-  x$Date_Time <- x$Date_Time %>% 
+  Survey_Temp_Data$Date_Time <- Survey_Temp_Data$Date_Time %>% 
     mdy_hms()
   
-  x %>% 
+  Survey_Temp_Data %>% 
     mutate(Join_DateTime = Date_Time) %>%
     setDT() %>%
     setkey(Join_DateTime)
   
-  # Figure out what output name should be based on filename
-  y <- strsplit(filename, "_")[[1]]
-  sitecode <- y[3]
-  date <- y[2]
-  name <- paste(sitecode, "Survey_Temp", date, sep ="_")
+  # Figure out what output name (R object going in the global environment) should be based on imported .csv file name
+  # strsplit() allows you to split the imported .csv file name by _
+  # For example 21099530_07132021_AAB_RBK_Sauk_READONLY.csv would be split into list [[1]] with the items [1] 21099530 [2] 07132021 [3] AAB [4] RBK [5] Sauk [6] READONLY
+  # Specify the list number [[1]] and then assign how you want the object to be named based off of the items in the list
+  
+  y <- strsplit(Survey_Temp_File_Name, "_")[[1]]
+  Survey_Temp_Site_Code <- y[3]
+  Survey_Temp_Date <- y[2]
+  Survey_Temp_Object_Name <- paste(Survey_Temp_Site_Code, "Survey_Temp", Survey_Temp_Date, sep ="_")
   
   
-  # Return tibble/data.table (date_thing) and suggested name
-  return(list(data_thing = x, suggested_name = name))
+  # Return produced data.table Survey_Temp_Data (which we called "Data" although you don't need to name them) suggested object name (which we called "Suggested_Name)
+  return(list(Data = Survey_Temp_Data, Suggested_Name =  Survey_Temp_Object_Name))
 }
+```
 
+```{r}
+# Example call using the function
 
+Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\21099530_07132021_AAB_RBK_Sauk_READONLY.csv"
 
-#example call
-
-filename <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\21099530_07132021_AAB_RBK_Sauk_READONLY.csv"
-
-out <- prepjoin(filename)
+out <- Survey_Temp_Prep_Join_Function(Survey_Temp_File_Name)
 
 #This assigns an object in the global environment named the suggested name that is the data thing (produced tibble/data.table from the function)
 assign(out$suggested_name, out$data_thing)
 
 ```
+
+
 
 
 Function for getting tracklog data read to merge (date-time formatting, copying ltime column into Join_DateTime, converting it to a data.table, and setting the key).
