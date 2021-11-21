@@ -177,6 +177,7 @@ Survey_Temp_Prep_Join_Function <- function(Survey_Temp_File_Name){
   Survey_Temp_Object_Name <- paste(Survey_Temp_Site_Code, "Survey_Temp", Survey_Temp_Date, sep ="_")
   
   
+  # Return is what is spit out by the function when you do a call
   # Return produced data table Survey_Temp_Data (which we called "Data" although you don't need to name them) and suggested object name (which we called "Suggested_Name")
   
   return(list(Data = Survey_Temp_Data, Suggested_Name =  Survey_Temp_Object_Name))
@@ -239,6 +240,7 @@ Tracklog_Prep_Join_Function <- function(Tracklog_File_Name){
   Tracklog_Object_Name <- paste(Tracklog_Site_Code, "Tracklog", Tracklog_Date, sep ="_")
   
   
+  # Return is what is spit out by the function when you do a call
   # Return produced data table Tracklog_Data (which we called "Data" although you don't need to name them) and suggested object name (which we called "Suggested_Name")
   
   return(list(Data = Tracklog_Data, Suggested_Name =  Tracklog_Object_Name))
@@ -259,11 +261,46 @@ assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
 
 Merging, converting back to a tibble, trimming, and exporting as a .csv can be done manually.
 
+```{r}
+AAB_07132021_Merged <- AAB_Survey_Temp_07132021[AAB_Tracklog_07132021, roll = TRUE]
+setDF(AAB_07132021_Merged)
+AAB_07132021_Merged <- as_tibble(AAB_07132021_Merged)
+AAB_07132021_Merged_Trim <- AAB_07132021_Merged %>%
+  slice(c(29:167, 201:277)) %>%
+  select(Join_DateTime, Temp_C, Latitude, Longitude)
+# AAB_07132021_Merged_Trim %>%
+# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AAB_07132021_Merged_Trim.csv")
+```
 
 
 APPLYING FUNCTIONS
 
 Apply these function to each survey temperature logger data .csv file and its corresponding tracklog .txt file starting after AAB RBK Sauk on 07/13/2021.  Make sure to ignore surveys where the tracklog did not record seconds because a rolling join is not possible.
+
+
+AAC_07122021
+
+```{r}
+Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AAB_07132021_RBK_Sauk_READONLY.csv"
+Survey_Temp_Call <- Survey_Temp_Prep_Join_Function(Survey_Temp_File_Name)
+assign(Survey_Temp_Call$Suggested_Name, Survey_Temp_Call$Data)
+
+Tracklog_File_Name <- "..\\..\\Data\\Raw Data\\Tracklog Data\\Tracklog_Data_AAB_07132021_RBK_Sauk_READONLY.txt"
+Tracklog_Call <- Tracklog_Prep_Join_Function(Tracklog_File_Name)
+assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
+
+AAB_07132021_Merged <- AAB_Survey_Temp_07132021[AAB_Tracklog_07132021, roll = TRUE]
+setDF(AAB_07132021_Merged)
+AAB_07132021_Merged <- as_tibble(AAB_07132021_Merged)
+AAB_07132021_Merged_Trim <- AAB_07132021_Merged %>%
+  slice(c(29:167, 201:277)) %>%
+  select(Join_DateTime, Temp_C, Latitude, Longitude)
+# AAB_07132021_Merged_Trim %>%
+# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AAB_07132021_Merged_Trim.csv")
+```
+
+
+AAC_10192021
 
 
 
