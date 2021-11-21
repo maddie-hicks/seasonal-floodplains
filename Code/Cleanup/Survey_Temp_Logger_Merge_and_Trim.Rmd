@@ -281,29 +281,271 @@ Apply these function to each survey temperature logger data .csv file and its co
 AAC_07122021
 
 ```{r}
-Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AAB_07132021_RBK_Sauk_READONLY.csv"
+Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AAC_07122021_Sauk_Boat_Launch_READONLY.csv"
 Survey_Temp_Call <- Survey_Temp_Prep_Join_Function(Survey_Temp_File_Name)
 assign(Survey_Temp_Call$Suggested_Name, Survey_Temp_Call$Data)
 
-Tracklog_File_Name <- "..\\..\\Data\\Raw Data\\Tracklog Data\\Tracklog_Data_AAB_07132021_RBK_Sauk_READONLY.txt"
+Tracklog_File_Name <- "..\\..\\Data\\Raw Data\\Tracklog Data\\Tracklog_Data_AAC_07122021_Sauk_Boat_Launch_READONLY.txt"
 Tracklog_Call <- Tracklog_Prep_Join_Function(Tracklog_File_Name)
 assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
 
-AAB_07132021_Merged <- AAB_Survey_Temp_07132021[AAB_Tracklog_07132021, roll = TRUE]
-setDF(AAB_07132021_Merged)
-AAB_07132021_Merged <- as_tibble(AAB_07132021_Merged)
-AAB_07132021_Merged_Trim <- AAB_07132021_Merged %>%
-  slice(c(29:167, 201:277)) %>%
+AAC_07122021_Merged <- AAC_Survey_Temp_07122021[AAC_Tracklog_07122021, roll = TRUE]
+setDF(AAC_07122021_Merged)
+AAC_07122021_Merged <- as_tibble(AAC_07122021_Merged)
+AAC_07122021_Merged_Trim <- AAC_07122021_Merged %>%
+  slice(c(36:178, 192:209)) %>%
   select(Join_DateTime, Temp_C, Latitude, Longitude)
-# AAB_07132021_Merged_Trim %>%
-# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AAB_07132021_Merged_Trim.csv")
+# AAC_07122021_Merged_Trim %>%
+# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AAC_07122021_Merged_Trim.csv")
 ```
 
 
 AAC_10192021
 
+```{r}
+Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AAC_10192021_Sauk_Boat_Launch_READONLY.csv"
+Survey_Temp_Call <- Survey_Temp_Prep_Join_Function(Survey_Temp_File_Name)
+assign(Survey_Temp_Call$Suggested_Name, Survey_Temp_Call$Data)
+
+Tracklog_File_Name <- "..\\..\\Data\\Raw Data\\Tracklog Data\\Tracklog_Data_AAC_10192021_Sauk_Boat_Launch_READONLY.txt"
+Tracklog_Call <- Tracklog_Prep_Join_Function(Tracklog_File_Name)
+assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
+
+AAC_10192021_Merged <- AAC_Survey_Temp_10192021[AAC_Tracklog_10192021, roll = TRUE]
+setDF(AAC_10192021_Merged)
+AAC_10192021_Merged <- as_tibble(AAC_10192021_Merged)
+AAC_10192021_Merged_Trim <- AAC_10192021_Merged %>%
+  slice(618:1148) %>%
+  select(Join_DateTime, Temp_C, Latitude, Longitude)
+# AAC_10192021_Merged_Trim %>%
+# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AAC_10192021_Merged_Trim.csv")
+```
 
 
+AAE_05142021
+
+```{r}
+Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AAE_05142021_Utopia_READONLY.csv"
+Survey_Temp_Call <- Survey_Temp_Prep_Join_Function(Survey_Temp_File_Name)
+assign(Survey_Temp_Call$Suggested_Name, Survey_Temp_Call$Data)
+
+Tracklog_File_Name <- "..\\..\\Data\\Raw Data\\Tracklog Data\\Tracklog_Data_AAE_05142021_Utopia_READONLY.txt"
+Tracklog_Call <- Tracklog_Prep_Join_Function(Tracklog_File_Name)
+assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
+
+AAE_05142021_Merged <- AAE_Survey_Temp_05142021[AAE_Tracklog_05142021, roll = TRUE]
+setDF(AAE_05142021_Merged)
+AAE_05142021_Merged <- as_tibble(AAE_05142021_Merged)
+AAE_05142021_Merged_Trim <- AAE_05142021_Merged %>%
+  slice(c(24:222, 275:359)) %>%
+  select(Join_DateTime, Temp_C, Latitude, Longitude)
+# AAE_05142021_Merged_Trim %>%
+# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AAE_05142021_Merged_Trim.csv")
+```
 
 
+AB_04142021
+
+Since this survey was conducted using a GPS from a different project, the date-time format is in myd_hms.  Since the function assumes the date-time format is ymd_hms to parse the data, we have to do it manually instead of using the function.
+
+```{r}
+Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AB_04142021_McCleod_Slough_READONLY.csv"
+Survey_Temp_Call <- Survey_Temp_Prep_Join_Function(Survey_Temp_File_Name)
+assign(Survey_Temp_Call$Suggested_Name, Survey_Temp_Call$Data)
+
+AB_Tracklog_04142021 <- read_tsv("..\\..\\Data\\Raw Data\\Tracklog Data\\Tracklog_Data_AB_04142021_McCleod_Slough_READONLY.txt")
+
+AB_Tracklog_04142021$ltime <- AB_Tracklog_04142021$ltime %>%
+  mdy_hms()
+  
+AB_Tracklog_04142021 <- AB_Tracklog_04142021 %>%        
+  mutate(Join_DateTime = ltime) %>%
+  setDT() %>%
+  setkey(Join_DateTime)
+
+AB_04142021_Merged <- AB_Survey_Temp_04142021[AB_Tracklog_04142021, roll = TRUE]
+setDF(AB_04142021_Merged)
+AB_04142021_Merged <- as_tibble(AB_04142021_Merged)
+AB_04142021_Merged_Trim <- AB_04142021_Merged %>%
+  slice(1103:1305) %>%
+  select(Join_DateTime, Temp_C, Latitude, Longitude)
+# AB_04142021_Merged_Trim %>%
+# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AB_04142021_Merged_Trim.csv")
+```
+
+
+AB_07132021
+
+```{r}
+Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AB_07132021_McCleod_Slough_READONLY.csv"
+Survey_Temp_Call <- Survey_Temp_Prep_Join_Function(Survey_Temp_File_Name)
+assign(Survey_Temp_Call$Suggested_Name, Survey_Temp_Call$Data)
+
+Tracklog_File_Name <- "..\\..\\Data\\Raw Data\\Tracklog Data\\Tracklog_Data_AB_07132021_McCleod_Slough_READONLY.txt"
+Tracklog_Call <- Tracklog_Prep_Join_Function(Tracklog_File_Name)
+assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
+
+AB_07132021_Merged <- AB_Survey_Temp_07132021[AB_Tracklog_07132021, roll = TRUE]
+setDF(AB_07132021_Merged)
+AB_07132021_Merged <- as_tibble(AB_07132021_Merged)
+AB_07132021_Merged_Trim <- AB_07132021_Merged %>%
+  slice(27:152) %>%
+  select(Join_DateTime, Temp_C, Latitude, Longitude)
+# AB_07132021_Merged_Trim %>%
+# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AB_07132021_Merged_Trim.csv")
+```
+
+
+AC_06082021
+
+```{r}
+Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AC_06082021_HMSP_Slough_READONLY.csv"
+Survey_Temp_Call <- Survey_Temp_Prep_Join_Function(Survey_Temp_File_Name)
+assign(Survey_Temp_Call$Suggested_Name, Survey_Temp_Call$Data)
+
+Tracklog_File_Name <- "..\\..\\Data\\Raw Data\\Tracklog Data\\Tracklog_Data_AC_06082021_HMSP_Slough_READONLY.txt"
+Tracklog_Call <- Tracklog_Prep_Join_Function(Tracklog_File_Name)
+assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
+
+AC_06082021_Merged <- AC_Survey_Temp_06082021[AC_Tracklog_06082021, roll = TRUE]
+setDF(AC_06082021_Merged)
+AC_06082021_Merged <- as_tibble(AC_06082021_Merged)
+AC_06082021_Merged_Trim <- AC_06082021_Merged %>%
+  slice(c(55:118, 127:172)) %>%
+  select(Join_DateTime, Temp_C, Latitude, Longitude)
+# AC_06082021_Merged_Trim %>%
+# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AC_06082021_Merged_Trim.csv")
+```
+
+
+AC_09202021
+
+```{r}
+Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AC_09202021_HMSP_Slough_READONLY.csv"
+Survey_Temp_Call <- Survey_Temp_Prep_Join_Function(Survey_Temp_File_Name)
+assign(Survey_Temp_Call$Suggested_Name, Survey_Temp_Call$Data)
+
+Tracklog_File_Name <- "..\\..\\Data\\Raw Data\\Tracklog Data\\Tracklog_Data_AC_09202021_HMSP_Slough_READONLY.txt"
+Tracklog_Call <- Tracklog_Prep_Join_Function(Tracklog_File_Name)
+assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
+
+AC_09202021_Merged <- AC_Survey_Temp_09202021[AC_Tracklog_09202021, roll = TRUE]
+setDF(AC_09202021_Merged)
+AC_09202021_Merged <- as_tibble(AC_09202021_Merged)
+AC_09202021_Merged_Trim <- AC_09202021_Merged %>%
+  slice(19:294) %>%
+  select(Join_DateTime, Temp_C, Latitude, Longitude)
+# AC_09202021_Merged_Trim %>%
+# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AC_09202021_Merged_Trim.csv")
+```
+
+
+AH_06092021
+
+```{r}
+Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AH_06092021_Martin_Slough_READONLY.csv"
+Survey_Temp_Call <- Survey_Temp_Prep_Join_Function(Survey_Temp_File_Name)
+assign(Survey_Temp_Call$Suggested_Name, Survey_Temp_Call$Data)
+
+Tracklog_File_Name <- "..\\..\\Data\\Raw Data\\Tracklog Data\\Tracklog_Data_AH_06092021_Martin_Slough_READONLY.txt"
+Tracklog_Call <- Tracklog_Prep_Join_Function(Tracklog_File_Name)
+assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
+
+AH_06092021_Merged <- AH_Survey_Temp_06092021[AH_Tracklog_06092021, roll = TRUE]
+setDF(AH_06092021_Merged)
+AH_06092021_Merged <- as_tibble(AH_06092021_Merged)
+AH_06092021_Merged_Trim <- AH_06092021_Merged %>%
+  slice(1:216) %>%
+  select(Join_DateTime, Temp_C, Latitude, Longitude)
+# AH_06092021_Merged_Trim %>%
+# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AH_06092021_Merged_Trim.csv")
+```
+
+
+AH_09202021
+
+```{r}
+Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AH_09202021_Martin_Slough_READONLY.csv"
+Survey_Temp_Call <- Survey_Temp_Prep_Join_Function(Survey_Temp_File_Name)
+assign(Survey_Temp_Call$Suggested_Name, Survey_Temp_Call$Data)
+
+Tracklog_File_Name <- "..\\..\\Data\\Raw Data\\Tracklog Data\\Tracklog_Data_AH_09202021_Martin_Slough_READONLY.txt"
+Tracklog_Call <- Tracklog_Prep_Join_Function(Tracklog_File_Name)
+assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
+
+AH_09202021_Merged <- AH_Survey_Temp_09202021[AH_Tracklog_09202021, roll = TRUE]
+setDF(AH_09202021_Merged)
+AH_09202021_Merged <- as_tibble(AH_09202021_Merged)
+AH_09202021_Merged_Trim <- AH_09202021_Merged %>%
+  slice(c(29:250, 263:573)) %>%
+  select(Join_DateTime, Temp_C, Latitude, Longitude)
+# AH_09202021_Merged_Trim %>%
+# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AH_09202021_Merged_Trim.csv")
+```
+
+
+AI_08172021
+
+```{r}
+Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AI_08172021_LBK_Skagit_Side_Channel_READONLY.csv"
+Survey_Temp_Call <- Survey_Temp_Prep_Join_Function(Survey_Temp_File_Name)
+assign(Survey_Temp_Call$Suggested_Name, Survey_Temp_Call$Data)
+
+Tracklog_File_Name <- "..\\..\\Data\\Raw Data\\Tracklog Data\\Tracklog_Data_AI_08172021_LBK_Skagit_Side_Channel_READONLY.txt"
+Tracklog_Call <- Tracklog_Prep_Join_Function(Tracklog_File_Name)
+assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
+
+AI_08172021_Merged <- AI_Survey_Temp_08172021[AI_Tracklog_08172021, roll = TRUE]
+setDF(AI_08172021_Merged)
+AI_08172021_Merged <- as_tibble(AI_08172021_Merged)
+AI_08172021_Merged_Trim <- AI_08172021_Merged %>%
+  slice(c(19:172, 181:189, 194:200)) %>%
+  select(Join_DateTime, Temp_C, Latitude, Longitude)
+# AI_08172021_Merged_Trim %>%
+# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AI_08172021_Merged_Trim.csv")
+```
+
+
+AI_10182021
+
+```{r}
+Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AI_10182021_LBK_Skagit_Side_Channel_READONLY.csv"
+Survey_Temp_Call <- Survey_Temp_Prep_Join_Function(Survey_Temp_File_Name)
+assign(Survey_Temp_Call$Suggested_Name, Survey_Temp_Call$Data)
+
+Tracklog_File_Name <- "..\\..\\Data\\Raw Data\\Tracklog Data\\Tracklog_Data_AI_10182021_LBK_Skagit_Side_Channel_READONLY.txt"
+Tracklog_Call <- Tracklog_Prep_Join_Function(Tracklog_File_Name)
+assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
+
+AI_10182021_Merged <- AI_Survey_Temp_10182021[AI_Tracklog_10182021, roll = TRUE]
+setDF(AI_10182021_Merged)
+AI_10182021_Merged <- as_tibble(AI_10182021_Merged)
+AI_10182021_Merged_Trim <- AI_08172021_Merged %>%
+  slice(398:649) %>%
+  select(Join_DateTime, Temp_C, Latitude, Longitude)
+# AI_10182021_Merged_Trim %>%
+# write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AI_10182021_Merged_Trim.csv")
+```
+
+
+AK_05132021
+
+```{r}
+Survey_Temp_File_Name <- "..\\..\\Data\\Raw Data\\Survey Temperature Logger Data\\Survey_Temp_Data_AK_05132021_False_Lucas_READONLY.csv"
+Survey_Temp_Call <- Survey_Temp_Prep_Join_Function(Survey_Temp_File_Name)
+assign(Survey_Temp_Call$Suggested_Name, Survey_Temp_Call$Data)
+
+Tracklog_File_Name <- "..\\..\\Data\\Raw Data\\Tracklog Data\\Tracklog_Data_AK_05132021_False_Lucas_READONLY.txt"
+Tracklog_Call <- Tracklog_Prep_Join_Function(Tracklog_File_Name)
+assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
+
+AK_05132021_Merged <- AK_Survey_Temp_05132021[AK_Tracklog_05132021, roll = TRUE]
+setDF(AK_05132021_Merged)
+AK_05132021_Merged <- as_tibble(AK_05132021_Merged)
+AK_05132021_Merged_Trim <- AK_05132021_Merged %>%
+  slice(c(40:177, 245:248)) %>%
+  select(Join_DateTime, Temp_C, Latitude, Longitude)
+AK_05132021_Merged_Trim %>%
+write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AK_05132021_Merged_Trim.csv")
+```
 
