@@ -9,6 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
  - Convert the DO logger Date_Time data into a date-time format
  - Combine the level logger Date and Time columns into one Date_Time column and convert into date-time format
+ - Cleanup of USGS Skagit/Sauk mainstem data with column header name adjustment and date-time formatting (this only has to be done once)
 
 Clear the workspace and close all graphic devices (two right panels in RStudio).  Bring in necessary packages.
 
@@ -51,9 +52,72 @@ AA_DO_Logger$Date_Time <- AA_DO_Logger$Date_Time %>%
 Export AA_DO_Logger as a .csv in the Derived Data folder in GitHub.  Using # so don't export a new .csv every time the code is run.  Just delete the # when you want to export.
 
 ```{r}
-#AA_DO_Logger %>%
-  #write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\AA_DO_Logger_DateTime.csv")
+# AA_DO_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\DO Data\\AA_DO_Logger_DateTime.csv")
 ```
+
+Repeat for DO data at all sites.
+
+AAE (Utopia)
+
+```{r}
+AAE_DO_Logger <- read_csv("..\\..\\Data\\Raw Data\\DO Logger Data\\DO_Logger_Data_AAE_Utopia_READONLY.csv")
+AAE_DO_Logger$Date_Time <- AAE_DO_Logger$Date_Time %>%
+  mdy_hm()
+# AAE_DO_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\DO Data\\AAE_DO_Logger_DateTime.csv")
+```
+
+AC (HMSP Slough)
+
+```{r}
+AC_DO_Logger <- read_csv("..\\..\\Data\\Raw Data\\DO Logger Data\\DO_Logger_Data_AC_HMSP_Slough_READONLY.csv")
+AC_DO_Logger$Date_Time <- AC_DO_Logger$Date_Time %>%
+  mdy_hm()
+# AC_DO_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\DO Data\\AC_DO_Logger_DateTime.csv")
+```
+
+AH (Martin Slough)
+
+```{r}
+AH_DO_Logger <- read_csv("..\\..\\Data\\Raw Data\\DO Logger Data\\DO_Logger_Data_AH_Martin_Slough_READONLY.csv")
+AH_DO_Logger$Date_Time <- AH_DO_Logger$Date_Time %>%
+  mdy_hm()
+# AH_DO_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\DO Data\\AH_DO_Logger_DateTime.csv")
+```
+
+AQ (Floral Lane)
+
+```{r}
+AQ_DO_Logger <- read_csv("..\\..\\Data\\Raw Data\\DO Logger Data\\DO_Logger_Data_AQ_Floral_Lane_READONLY.csv")
+AQ_DO_Logger$Date_Time <- AQ_DO_Logger$Date_Time %>%
+  mdy_hm()
+# AQ_DO_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\DO Data\\AQ_DO_Logger_DateTime.csv")
+```
+
+P (Savage Slough)
+
+```{r}
+P_DO_Logger <- read_csv("..\\..\\Data\\Raw Data\\DO Logger Data\\DO_Logger_Data_P_Savage_Slough_READONLY.csv")
+P_DO_Logger$Date_Time <- P_DO_Logger$Date_Time %>%
+  mdy_hm()
+# P_DO_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\DO Data\\P_DO_Logger_DateTime.csv")
+```
+
+Z (Site Z)
+
+```{r}
+Z_DO_Logger <- read_csv("..\\..\\Data\\Raw Data\\DO Logger Data\\DO_Logger_Data_Z_Off-channel_LBK_Skagit_READONLY.csv")
+Z_DO_Logger$Date_Time <- Z_DO_Logger$Date_Time %>%
+  mdy_hm()
+# Z_DO_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\DO Data\\Z_DO_Logger_DateTime.csv")
+```
+
 
 
 LEVEL LOGGER DATE_TIME FORMATTING
@@ -68,6 +132,291 @@ Now unite the Date and Time columns into one string.
 
 ```{r}
 AA_Level_Logger <- AA_Level_Logger %>%
-  unite()
+  unite(Date_Time, Date, Time, sep = " ")
 ```
+
+Parse the Date_Time column (identify and convert into POSIXct format which is readable by R) using the lubridate package in tidyverse.  When parsing date-time data you must specify the format that the data is currently in.  In this case, it is mdy_hms.
+
+```{r}
+AA_Level_Logger$Date_Time <- AA_Level_Logger$Date_Time %>%
+  mdy_hms()
+```
+
+Export AA_Level_Logger as a .csv in the Derived Data folder in GitHub.  Using # so don't export a new .csv every time the code is run.  Just delete the # when you want to export.
+
+```{r}
+# AA_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AA_Level_Logger_DateTime.csv")
+```
+
+Repeat for Level/Temp data at all sites.
+
+AAB (RBK Sauk)
+
+```{r}
+AAB_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_AAB_RBK_Sauk_READONLY.csv")
+AAB_Level_Logger <- AAB_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+AAB_Level_Logger$Date_Time <- AAB_Level_Logger$Date_Time %>%
+  mdy_hms()
+# AAB_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AAB_Level_Logger_DateTime.csv")
+```
+
+AAC (Sauk Boat Launch)
+
+```{r}
+AAC_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_AAC_Sauk_Boat_Launch_READONLY.csv")
+AAC_Level_Logger <- AAC_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+AAC_Level_Logger$Date_Time <- AAC_Level_Logger$Date_Time %>%
+  mdy_hms()
+# AAC_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AAC_Level_Logger_DateTime.csv")
+```
+
+AAE (Utopia)
+
+```{r}
+AAE_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_AAE_Utopia_READONLY.csv")
+AAE_Level_Logger <- AAE_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+AAE_Level_Logger$Date_Time <- AAE_Level_Logger$Date_Time %>%
+  mdy_hms()
+# AAE_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AAE_Level_Logger_DateTime.csv")
+```
+
+AAF (Illabot Chum Channel)
+
+```{r}
+AAF_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_AAF_Illabot_Channel_READONLY.csv")
+AAF_Level_Logger <- AAF_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+AAF_Level_Logger$Date_Time <- AAF_Level_Logger$Date_Time %>%
+  mdy_hms()
+# AAF_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AAF_Level_Logger_DateTime.csv")
+```
+
+AB (McCleod Slough)
+
+```{r}
+AB_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_AB_McCleod_Slough_READONLY.csv")
+AB_Level_Logger <- AB_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+AB_Level_Logger$Date_Time <- AB_Level_Logger$Date_Time %>%
+  mdy_hms()
+# AB_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AB_Level_Logger_DateTime.csv")
+```
+
+AC (HMSP Slough)
+
+```{r}
+AC_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_AC_HMSP_Slough_READONLY.csv")
+AC_Level_Logger <- AC_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+AC_Level_Logger$Date_Time <- AC_Level_Logger$Date_Time %>%
+  mdy_hms()
+# AC_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AC_Level_Logger_DateTime.csv")
+```
+
+AH (Martin Slough)
+
+```{r}
+AH_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_AH_Martin_Slough_READONLY.csv")
+AH_Level_Logger <- AH_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+AH_Level_Logger$Date_Time <- AH_Level_Logger$Date_Time %>%
+  mdy_hms()
+# AH_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AH_Level_Logger_DateTime.csv")
+```
+
+AK (False Lucas Slough)
+
+```{r}
+AK_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_AK_False_Lucas_Slough_READONLY.csv")
+AK_Level_Logger <- AK_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+AK_Level_Logger$Date_Time <- AK_Level_Logger$Date_Time %>%
+  mdy_hms()
+# AK_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AK_Level_Logger_DateTime.csv")
+```
+
+AP (Powerline Pond)
+
+```{r}
+AP_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_AP_Powerline_Pond_READONLY.csv")
+AP_Level_Logger <- AP_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+AP_Level_Logger$Date_Time <- AP_Level_Logger$Date_Time %>%
+  mdy_hms()
+# AP_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AP_Level_Logger_DateTime.csv")
+```
+
+AQ (Floral Lane)
+
+```{r}
+AQ_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_AQ_Floral_Lane_READONLY.csv")
+AQ_Level_Logger <- AQ_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+AQ_Level_Logger$Date_Time <- AQ_Level_Logger$Date_Time %>%
+  mdy_hms()
+# AQ_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AQ_Level_Logger_DateTime.csv")
+```
+
+C (Deadman/Skiyou Slough)
+
+```{r}
+C_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_C_Deadman_Skiyou_Slough_READONLY.csv")
+C_Level_Logger <- C_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+C_Level_Logger$Date_Time <- C_Level_Logger$Date_Time %>%
+  mdy_hms()
+# C_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\C_Level_Logger_DateTime.csv")
+```
+
+D (West of Stevens)
+
+```{r}
+D_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_D_West_Stevens_READONLY.csv")
+D_Level_Logger <- D_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+D_Level_Logger$Date_Time <- D_Level_Logger$Date_Time %>%
+  mdy_hms()
+# D_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\D_Level_Logger_DateTime.csv")
+```
+
+K (Minkler Lake)
+
+```{r}
+K_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_K_Minkler_Lake_READONLY.csv")
+K_Level_Logger <- K_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+K_Level_Logger$Date_Time <- K_Level_Logger$Date_Time %>%
+  mdy_hms()
+# K_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\K_Level_Logger_DateTime.csv")
+```
+
+L (Cumberland Oxbow)
+
+```{r}
+L_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_L_Cumberland_Oxbow_READONLY.csv")
+L_Level_Logger <- L_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+L_Level_Logger$Date_Time <- L_Level_Logger$Date_Time %>%
+  mdy_hms()
+# L_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\L_Level_Logger_DateTime.csv")
+```
+
+P (Savage Slough)
+
+```{r}
+P_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_P_Savage_Slough_READONLY.csv")
+P_Level_Logger <- P_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+P_Level_Logger$Date_Time <- P_Level_Logger$Date_Time %>%
+  mdy_hms()
+# P_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\P_Level_Logger_DateTime.csv")
+```
+
+R (Hurn Field)
+
+```{r}
+R_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_R_Hurn_Field_READONLY.csv")
+R_Level_Logger <- R_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+R_Level_Logger$Date_Time <- R_Level_Logger$Date_Time %>%
+  mdy_hms()
+# R_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\R_Level_Logger_DateTime.csv")
+```
+
+Y (Thunderbird Slough)
+
+```{r}
+Y_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_Y_Thunderbird_Slough_READONLY.csv")
+Y_Level_Logger <- Y_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+Y_Level_Logger$Date_Time <- Y_Level_Logger$Date_Time %>%
+  mdy_hms()
+# Y_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\Y_Level_Logger_DateTime.csv")
+```
+
+Z (Site Z)
+
+```{r}
+Z_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_Z_Off-channel_LBK_Skagit.csv")
+Z_Level_Logger <- Z_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+Z_Level_Logger$Date_Time <- Z_Level_Logger$Date_Time %>%
+  mdy_hms()
+# Z_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\Z_Level_Logger_DateTime.csv")
+```
+
+In hindsight it would've been easier to just make a function...next time.
+
+
+USGS DATA CLEANUP
+
+Download the USGS Skagit mainstem (Marblemount) data by following instructions in this link (https://serc.carleton.edu/hydromodules/steps/dm1.html).  Open the .txt file and manually delete the top rows that contain metadata.  Read in the .txt file.
+
+```{r}
+Skagit_Mainstem <- read_tsv("..\\..\\Data\\Raw Data\\USGS Mainstem Data\\Skagit_Mainstem_Gage_2021.txt")
+```
+
+Rename the column "datetime" to "Date_Time" and then parse that column.
+
+```{r}
+Skagit_Mainstem <- Skagit_Mainstem %>%
+  rename("Date_Time" = "datetime")
+
+Skagit_Mainstem$Date_Time <- Skagit_Mainstem$Date_Time %>%
+  ymd_hm()
+```
+The top row failed to parse, so go ahead and delete that row.
+
+```{r}
+Skagit_Mainstem <- Skagit_Mainstem %>%
+  slice(2:48067)
+```
+
+Export as a .csv to Derived Data folder in GitHub
+
+```{r}
+# Skagit_Mainstem %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\USGS Mainstem Data\\Skagit_Mainstem_Gage_2021.csv")
+```
+
+Repeat with the USGS Sauk mainstem (Darrington) data.
+
+```{r}
+Sauk_Mainstem <- read_tsv("..\\..\\Data\\Raw Data\\USGS Mainstem Data\\Sauk_Mainstem_Gage_2021.txt")
+
+Sauk_Mainstem <- Sauk_Mainstem %>%
+  rename("Date_Time" = "datetime")
+
+Sauk_Mainstem$Date_Time <- Sauk_Mainstem$Date_Time %>%
+  ymd_hm()
+
+Sauk_Mainstem <- Sauk_Mainstem %>%
+  slice(2:17627)
+
+# Sauk_Mainstem %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\USGS Mainstem Data\\Sauk_Mainstem_Gage_2021.csv")
+```
+
 

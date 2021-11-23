@@ -293,7 +293,7 @@ AAC_07122021_Merged <- AAC_Survey_Temp_07122021[AAC_Tracklog_07122021, roll = TR
 setDF(AAC_07122021_Merged)
 AAC_07122021_Merged <- as_tibble(AAC_07122021_Merged)
 AAC_07122021_Merged_Trim <- AAC_07122021_Merged %>%
-  slice(c(36:178, 192:209)) %>%
+  slice(c(36:155, 160:178, 192:209)) %>%
   select(Join_DateTime, Temp_C, Latitude, Longitude)
 # AAC_07122021_Merged_Trim %>%
 # write_csv("..\\..\\Data\\Derived Data\\Merged and Trimmed Survey Temp and Tracklog\\AAC_07122021_Merged_Trim.csv")
