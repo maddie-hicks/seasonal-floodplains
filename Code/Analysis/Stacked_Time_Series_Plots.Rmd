@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
- - Create stacked time series plots from long term logger data (DO logger, level logger, and temperature logger) and connectivity data.
+ - Create stacked time series plots from long term logger data (level logger and temperature logger) and connectivity data.
 
 Clear the workspace and close all graphic devices (two right panels in RStudio).  Bring in necessary packages.
 
@@ -15,10 +15,228 @@ Clear the workspace and close all graphic devices (two right panels in RStudio).
 rm(list = ls())
 graphics.off()
 library(ggplot2)
+library(gridExtra)
+library(cowplot)
 ```
+
+Check the working directory and change if needed.
 
 ```{r}
-ggplot(AA_DO_Logger, aes(x = Date_Time, y = DO_mgL)) +
-  geom_line()
+getwd()
+```
+Read in the level/temp Logger data and the USGS Skagit and Sauk data.
+
+```{r}
+AA_Level <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AA_Level_Logger_DateTime.csv")
+Skagit <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\USGS Mainstem Data\\Skagit_Mainstem_Gage_2021.csv")
+Sauk <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\USGS Mainstem Data\\Sauk_Mainstem_Gage_2021.csv")
 ```
 
+Make the time series plot for level logger data using ggplot().  The scale on the x-axis (date-time) should be the same start and end date-time of the level/temperature logger.  The scale for all plots being stacked should be the same.  If the y-axis limits make the plot look to squished or too spread out, specify them with ylim().
+
+```{r}
+AA_Level_Plot <- ggplot(AA_Level, aes(x = Date_Time, y = LEVEL)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-06-09 17:00:00", "2021-10-05 13:30:00"))) +
+  theme(axis.title.x = element_blank()) +
+  ylab ("Water Level (m)") +
+  ylim(0, 2)
+```
+
+Repeat for temperature logger data.
+
+```{r}
+AA_Temp_Plot <- ggplot(AA_Level, aes(x = Date_Time, y = TEMPERATURE)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-06-09 17:00:00", "2021-10-05 13:30:00"))) +
+  theme(axis.title.x = element_blank()) +
+  ylab("Temperature (\u00B0C)") +
+  ylim(10,21)
+```
+
+Depending on the site, a plot for either the Skagit or Sauk discharge will be included in the final stacked time series plot.  
+Manually add a horizontal rectangle for connectivity thresholds using annotate().  Make sure that the x-axis scale is the same as the level and temperature plots.
+
+```{r}
+Skagit_Plot <- ggplot(Skagit, aes(x = Date_Time, y = Discharge_cfs)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-06-09 17:00:00", "2021-10-05 13:30:00"))) +
+  xlab("Date (2021)") +
+  ylab("Skagit Discharge (cfs)") + 
+  ylim(0, 20000) +
+  annotate(geom = "rect", xmin = as.POSIXct("2021-06-09 17:00:00"), xmax = as.POSIXct("2021-10-05 13:30:00"), 
+           ymin = 4000, ymax = 4500, alpha = 0.5) +
+  theme(axis.title.x = element_text(margin = margin(t = 10))) +
+  theme(axis.title.y = element_text(margin = margin(r = 10)))
+```
+
+Stack the plots together using plot_grid() in the cowplot package.  Use ggsave() to save as a PNG and specify the size of the plot.
+
+```{r}
+AA_Final_Plot <- plot_grid(AA_Level_Plot, AA_Temp_Plot, Skagit_Plot, align = "v", ncol = 1)
+# ggsave("..\\..\\Figures\\Time Series Plots\\AA_Time_Series_Plot.png", width = 7, height = 7, units = "in")
+```
+Repeat for each site.  This cannot easily be made into a function because each plot has unique adjustments and connectivity thresholds.
+
+AAB Plot
+
+```{r}
+AAB_Level <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AAB_Level_Logger_DateTime.csv")
+
+AAB_Level_Plot <- ggplot(AAB_Level, aes(x = Date_Time, y = LEVEL)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-06-11 16:00:00", "2021-10-05 13:30:00"))) +
+  theme(axis.title.x = element_blank()) +
+  ylab ("Water Level (m)") +
+  ylim(0.5, 0.9)
+
+AAB_Temp_Plot <- ggplot(AAB_Level, aes(x = Date_Time, y = TEMPERATURE)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-06-11 16:00:00", "2021-10-05 13:30:00"))) +
+  theme(axis.title.x = element_blank()) +
+  ylab("Temperature (\u00B0C)") +
+  ylim(11, 19)
+
+Sauk_Plot <- ggplot(Sauk, aes(x = Date_Time, y = Discharge_cfs)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-06-11 16:00:00", "2021-10-05 13:30:00"))) +
+  xlab("Date (2021)") +
+  ylab("Sauk Discharge (cfs)") +
+  ylim(0, 20000) +
+  theme(axis.title.x = element_text(margin = margin(t = 10))) +
+  theme(axis.title.y = element_text(margin = margin(r = 10)))
+
+AAB_Final_Plot <- plot_grid(AAB_Level_Plot, AAB_Temp_Plot, Sauk_Plot, align = "v", ncol = 1)
+# ggsave("..\\..\\Figures\\Time Series Plots\\AAB_Time_Series_Plot.png", width = 7, height = 7, units = "in")
+```
+
+AAC Plot
+
+```{r}
+AAC_Level <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AAC_Level_Logger_DateTime.csv")
+
+AAC_Level_Plot <- ggplot(AAC_Level, aes(x = Date_Time, y = LEVEL)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-06-22 00:00:00", "2021-10-05 13:30:00"))) +
+  theme(axis.title.x = element_blank()) +
+  ylab ("Water Level (m)")
+
+AAC_Temp_Plot <- ggplot(AAC_Level, aes(x = Date_Time, y = TEMPERATURE)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-06-22 00:00:00", "2021-10-05 13:30:00"))) +
+  theme(axis.title.x = element_blank()) +
+  ylab("Temperature (\u00B0C)")
+
+Sauk_Plot <- ggplot(Sauk, aes(x = Date_Time, y = Discharge_cfs)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-06-22 00:00:00", "2021-10-05 13:30:00"))) +
+  xlab("Date (2021)") +
+  ylab("Sauk Discharge (cfs)") +
+  ylim(0, 20000) + 
+  annotate(geom = "rect", xmin = as.POSIXct("2021-06-22 00:00:00"), xmax = as.POSIXct("2021-10-05 13:30:00"), 
+           ymin = 6000, ymax = 7500, alpha = 0.5) +
+  theme(axis.title.x = element_text(margin = margin(t = 10))) +
+  theme(axis.title.y = element_text(margin = margin(r = 10)))
+
+AAC_Final_Plot <- plot_grid(AAC_Level_Plot, AAC_Temp_Plot, Sauk_Plot, align = "v", ncol = 1)
+
+# ggsave("..\\..\\Figures\\Time Series Plots\\AAC_Time_Series_Plot.png", width = 7, height = 7, units = "in")
+```
+
+AAE Plot
+
+```{r}
+AAE_Level <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AAE_Level_Logger_DateTime.csv")
+
+AAE_Level_Plot <- ggplot(AAE_Level, aes(x = Date_Time, y = LEVEL)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-05-15 00:00:00", "2021-10-05 13:30:00"))) +
+  theme(axis.title.x = element_blank()) +
+  ylab ("Water Level (m)") +
+  ylim(0.35, 0.75)
+
+AAE_Temp_Plot <- ggplot(AAE_Level, aes(x = Date_Time, y = TEMPERATURE)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-05-15 00:00:00", "2021-10-05 13:30:00"))) +
+  theme(axis.title.x = element_blank()) +
+  ylab("Temperature (\u00B0C)")
+
+Skagit_Plot <- ggplot(Skagit, aes(x = Date_Time, y = Discharge_cfs)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-05-15 00:00:00", "2021-10-05 13:30:00"))) +
+  xlab("Date (2021)") +
+  ylab("Skagit Discharge (cfs)") + 
+  ylim(0, 20000) +
+  theme(axis.title.x = element_text(margin = margin(t = 10))) +
+  theme(axis.title.y = element_text(margin = margin(r = 10)))
+
+AAE_Final_Plot <- plot_grid(AAE_Level_Plot, AAE_Temp_Plot, Skagit_Plot, align = "v", ncol = 1)
+
+# ggsave("..\\..\\Figures\\Time Series Plots\\AAE_Time_Series_Plot.png", width = 7, height = 7, units = "in")
+```
+
+AAF
+
+```{r}
+AAF_Level <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AAF_Level_Logger_DateTime.csv")
+
+AAF_Level_Plot <- ggplot(AAF_Level, aes(x = Date_Time, y = LEVEL)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-05-06 00:00:00", "2021-10-05 13:30:00"))) +
+  theme(axis.title.x = element_blank()) +
+  ylab ("Water Level (m)")
+
+AAF_Temp_Plot <- ggplot(AAF_Level, aes(x = Date_Time, y = TEMPERATURE)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-05-06 00:00:00", "2021-10-05 13:30:00"))) +
+  theme(axis.title.x = element_blank()) +
+  ylab("Temperature (\u00B0C)")
+
+Skagit_Plot <- ggplot(Skagit, aes(x = Date_Time, y = Discharge_cfs)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-05-06 00:00:00", "2021-10-05 13:30:00"))) +
+  xlab("Date (2021)") +
+  ylab("Skagit Discharge (cfs)") + 
+  ylim(0, 20000) +
+  theme(axis.title.x = element_text(margin = margin(t = 10))) +
+  theme(axis.title.y = element_text(margin = margin(r = 10)))
+
+AAF_Final_Plot <- plot_grid(AAF_Level_Plot, AAF_Temp_Plot, Skagit_Plot, align = "v", ncol = 1)
+
+# ggsave("..\\..\\Figures\\Time Series Plots\\AAF_Time_Series_Plot.png", width = 7, height = 7, units = "in")
+```
+
+AB
+
+```{r}
+AB_Level <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AB_Level_Logger_DateTime.csv")
+
+AB_Level_Plot <- ggplot(AB_Level, aes(x = Date_Time, y = LEVEL)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-05-28 00:00:00", "2021-10-05 12:15:00"))) +
+  theme(axis.title.x = element_blank()) +
+  ylab ("Water Level (m)")
+
+AB_Temp_Plot <- ggplot(AB_Level, aes(x = Date_Time, y = TEMPERATURE)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-05-28 00:00:00", "2021-10-05 12:15:00"))) +
+  theme(axis.title.x = element_blank()) +
+  ylab("Temperature (\u00B0C)")
+
+Skagit_Plot <- ggplot(Skagit, aes(x = Date_Time, y = Discharge_cfs)) +
+  geom_line() +
+  scale_x_datetime(limits = as.POSIXct(c("2021-05-28 00:00:00", "2021-10-05 12:15:00"))) +
+  xlab("Date (2021)") +
+  ylab("Skagit Discharge (cfs)") + 
+  ylim(0, 20000) +
+  annotate(geom = "rect", xmin = as.POSIXct("2021-05-28 00:00:00"), xmax = as.POSIXct("2021-10-05 12:15:00"), 
+           ymin = 9000, ymax = 9500, alpha = 0.5) +
+  theme(axis.title.x = element_text(margin = margin(t = 10))) +
+  theme(axis.title.y = element_text(margin = margin(r = 10)))
+
+AB_Final_Plot <- plot_grid(AB_Level_Plot, AB_Temp_Plot, Skagit_Plot, align = "v", ncol = 1)
+
+# ggsave("..\\..\\Figures\\Time Series Plots\\AB_Time_Series_Plot.png", width = 7, height = 7, units = "in")
+```
+ 
+ 
