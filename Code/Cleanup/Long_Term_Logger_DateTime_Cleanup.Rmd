@@ -201,12 +201,16 @@ AAF_Level_Logger$Date_Time <- AAF_Level_Logger$Date_Time %>%
 
 AB (McCleod Slough)
 
+This dataset has one strange row with level and temperature values that aren't correct so that row is sliced out.
+
 ```{r}
 AB_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_AB_McCleod_Slough_READONLY.csv")
 AB_Level_Logger <- AB_Level_Logger %>%
   unite(Date_Time, Date, Time, sep = " ")
 AB_Level_Logger$Date_Time <- AB_Level_Logger$Date_Time %>%
   mdy_hms()
+AB_Level_Logger <- AB_Level_Logger %>%
+  slice(1:2650, 2652:12530)
 # AB_Level_Logger %>%
   # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AB_Level_Logger_DateTime.csv")
 ```
@@ -237,12 +241,16 @@ AH_Level_Logger$Date_Time <- AH_Level_Logger$Date_Time %>%
 
 AK (False Lucas Slough)
 
+This dataset has one strange row with level and temperature values that aren't correct so that row is sliced out.
+
 ```{r}
 AK_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_AK_False_Lucas_Slough_READONLY.csv")
 AK_Level_Logger <- AK_Level_Logger %>%
   unite(Date_Time, Date, Time, sep = " ")
 AK_Level_Logger$Date_Time <- AK_Level_Logger$Date_Time %>%
   mdy_hms()
+AK_Level_Logger <- AK_Level_Logger %>%
+  slice(1:4085, 4087:14167)
 # AK_Level_Logger %>%
   # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AK_Level_Logger_DateTime.csv")
 ```
@@ -357,12 +365,16 @@ Y_Level_Logger$Date_Time <- Y_Level_Logger$Date_Time %>%
 
 Z (Site Z)
 
+This dataset has one strange row with level and temperature values that aren't correct so that row is sliced out.
+
 ```{r}
 Z_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_Z_Off-channel_LBK_Skagit.csv")
 Z_Level_Logger <- Z_Level_Logger %>%
   unite(Date_Time, Date, Time, sep = " ")
 Z_Level_Logger$Date_Time <- Z_Level_Logger$Date_Time %>%
   mdy_hms()
+Z_Level_Logger <- Z_Level_Logger %>%
+  slice(1:2653, 2655:12535)
 # Z_Level_Logger %>%
   # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\Z_Level_Logger_DateTime.csv")
 ```
