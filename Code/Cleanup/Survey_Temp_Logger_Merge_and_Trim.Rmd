@@ -520,7 +520,7 @@ assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
 AI_10182021_Merged <- AI_Survey_Temp_10182021[AI_Tracklog_10182021, roll = TRUE]
 setDF(AI_10182021_Merged)
 AI_10182021_Merged <- as_tibble(AI_10182021_Merged)
-AI_10182021_Merged_Trim <- AI_08172021_Merged %>%
+AI_10182021_Merged_Trim <- AI_10182021_Merged %>%
   slice(398:649) %>%
   select(Join_DateTime, Temp_C, Latitude, Longitude)
 # AI_10182021_Merged_Trim %>%
@@ -778,7 +778,7 @@ assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
 Y_07142021_Merged <- Y_Survey_Temp_07142021[Y_Tracklog_07142021, roll = TRUE]
 setDF(Y_07142021_Merged)
 Y_07142021_Merged <- as_tibble(Y_07142021_Merged)
-Y_07142021_Merged_Trim <- U_09232021_Merged %>%
+Y_07142021_Merged_Trim <- Y_07142021_Merged %>%
   slice(62:250) %>%
   select(Join_DateTime, Temp_C, Latitude, Longitude)
 # Y_07142021_Merged_Trim %>%
@@ -800,7 +800,7 @@ assign(Tracklog_Call$Suggested_Name, Tracklog_Call$Data)
 Y_10182021_Merged <- Y_Survey_Temp_10182021[Y_Tracklog_10182021, roll = TRUE]
 setDF(Y_10182021_Merged)
 Y_10182021_Merged <- as_tibble(Y_10182021_Merged)
-Y_10182021_Merged_Trim <- U_09232021_Merged %>%
+Y_10182021_Merged_Trim <- Y_10182021_Merged %>%
   slice(26:209) %>%
   select(Join_DateTime, Temp_C, Latitude, Longitude)
 # Y_10182021_Merged_Trim %>%
