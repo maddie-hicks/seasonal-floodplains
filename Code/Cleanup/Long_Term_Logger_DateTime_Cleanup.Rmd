@@ -7,6 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+ - Convert the temperature logger Date_Time data into a date-time format
  - Convert the DO logger Date_Time data into a date-time format
  - Combine the level logger Date and Time columns into one Date_Time column and convert into date-time format
  - Cleanup of USGS Skagit/Sauk mainstem data with column header name adjustment and date-time formatting (this only has to be done once)
@@ -24,6 +25,34 @@ Check the working directory and change if needed.
 
 ```{r}
 getwd()
+```
+TEMPERATURE LOGGER DATE-TIME FORMATTING
+
+Read in the .csv
+
+```{r}
+AI_Temp_Logger <- read_csv("..\\..\\Data\\Raw Data\\Temperature Logger Data\\Temperature_Logger_Data_AI_LBK_Skagit_Side_Channel_READONLY.csv")
+```
+
+Check the data type for each column.  Date-Time is currently assigned as a character (chr) and DO is currently assigned as a "double class" (dbl) which are numeric values with decimal points.  There are also no seconds in the Date_Time column.
+
+```{r}
+AI_Temp_Logger %>%
+  head()
+```
+
+Parse the Date_Time column (identify and convert into POSIXct format which is readable by R) using the lubridate package in tidyverse.  When parsing date-time data you must specify the format that the data is currently in.  In this case, it is mdy_hm (there is no seconds data).
+
+```{r}
+AI_Temp_Logger$Date_Time <- AI_Temp_Logger$Date_Time %>%
+  mdy_hm()
+```
+
+Export AA_DO_Logger as a .csv in the Derived Data folder in GitHub.  Using # so don't export a new .csv every time the code is run.  Just delete the # when you want to export.
+
+```{r}
+# AI_Temp_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Temperature Data\\AI_Temp_Logger_DateTime.csv")
 ```
 
 

@@ -7,6 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+ - Create temperature time series plots for sites that only had temperature logger and no level logger.
  - Create DO time series plots from long term logger data.  Since these were placed for such a short amount of time at each site, it would be more informative for them to be their own plot to see diel changes in DO.
 
 Clear the workspace and close all graphic devices (two right panels in RStudio).  Bring in necessary packages.
@@ -23,11 +24,37 @@ Check the working directory and change if needed.
 getwd()
 ```
 
+
+TEMPERATURE PLOTS
+
+Read in the temperature data .csv.
+
+```{r}
+AI_Temp <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Temperature Data\\AI_Temp_Logger_DateTime.csv")
+```
+
+Make a time series plot with the DO data and export to the Figures folder on GitHub.
+
+```{r}
+AI_Temp_Plot <- ggplot(AI_Temp, aes(x = Date_Time, y = Temp_C)) +
+  geom_line() +
+  xlab("Date and Time") +
+  ylab("Temperature (\u00B0C)") +
+  theme(axis.title.x = element_text(margin = margin(t = 10))) +
+  theme(axis.title.y = element_text(margin = margin(r = 10)))
+
+# ggsave("..\\..\\Figures\\Temperature Plots\\AI_Temp_Plot.png", width = 6, height = 4, units = "in")
+```
+
+
+DO PLOTS
+
 Read in the DO data .csv.
 
 ```{r}
 AA_DO <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\DO Data\\AA_DO_Logger_DateTime.csv")
 ```
+
 Make a time series plot with the DO data and export to the Figures folder on GitHub.
 
 ```{r}
