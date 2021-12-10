@@ -15,6 +15,7 @@ Clear the workspace and close all graphic devices (two right panels in RStudio).
 ```{r}
 rm(list = ls())
 graphics.off()
+library(tidyverse)
 library(ggplot2)
 ```
 
@@ -63,7 +64,8 @@ AA_DO_Plot <- ggplot(AA_DO, aes(x = Date_Time, y = DO_mgL)) +
   xlab("Date and Time") +
   ylab("DO (mg/L)") +
   theme(axis.title.x = element_text(margin = margin(t = 10))) +
-  theme(axis.title.y = element_text(margin = margin(r = 10)))
+  theme(axis.title.y = element_text(margin = margin(r = 10))) +
+  theme(plot.margin = unit(c(0.25, 1, 0.25, 0.25), "cm"))
 
 # ggsave("..\\..\\Figures\\DO Plots\\AA_DO_Plot.png", width = 6, height = 4, units = "in")
 ```
