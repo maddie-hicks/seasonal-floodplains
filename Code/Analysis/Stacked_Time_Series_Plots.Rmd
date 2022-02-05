@@ -14,6 +14,7 @@ Clear the workspace and close all graphic devices (two right panels in RStudio).
 ```{r}
 rm(list = ls())
 graphics.off()
+library(tidyverse)
 library(ggplot2)
 library(gridExtra)
 library(cowplot)
@@ -241,8 +242,6 @@ AB_Final_Plot <- plot_grid(AB_Level_Plot, AB_Temp_Plot, Skagit_Plot, align = "v"
 
 AC Plot
 
-Need to add connectivity threshold when retrieve timelapse camera from HMSP.
-
 ```{r}
 AC_Level <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AC_Level_Logger_DateTime.csv")
 
@@ -265,8 +264,8 @@ Skagit_Plot <- ggplot(Skagit, aes(x = Date_Time, y = Discharge_cfs)) +
   xlab("Date (2021)") +
   ylab("Skagit Discharge (cfs)") + 
   ylim(0, 20000) +
-  # annotate(geom = "rect", xmin = as.POSIXct("2021-05-28 00:00:00"), xmax = as.POSIXct("2021-10-05 12:15:00"), 
-           # ymin = 9000, ymax = 9500, alpha = 0.5) +
+  annotate(geom = "rect", xmin = as.POSIXct("2021-06-22 11:15:00"), xmax = as.POSIXct("2021-10-05 13:30:00"), 
+           ymin = 16000, ymax = 18000, alpha = 0.5) +
   theme(axis.title.x = element_text(margin = margin(t = 10))) +
   theme(axis.title.y = element_text(margin = margin(r = 10)))
 
