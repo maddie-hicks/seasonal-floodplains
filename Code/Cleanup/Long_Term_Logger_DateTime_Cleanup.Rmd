@@ -308,6 +308,18 @@ AQ_Level_Logger$Date_Time <- AQ_Level_Logger$Date_Time %>%
   # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AQ_Level_Logger_DateTime.csv")
 ```
 
+B (Hart Island)
+
+```{r}
+B_Level_Logger <- read_csv("..\\..\\Data\\Raw Data\\Level Logger Data\\Level_Logger_Data_B_Hart_Island_READONLY.csv")
+B_Level_Logger <- B_Level_Logger %>%
+  unite(Date_Time, Date, Time, sep = " ")
+B_Level_Logger$Date_Time <- B_Level_Logger$Date_Time %>%
+  mdy_hms()
+# B_Level_Logger %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\B_Level_Logger_DateTime.csv")
+```
+
 C (Deadman/Skiyou Slough)
 
 ```{r}
