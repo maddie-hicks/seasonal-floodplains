@@ -1,0 +1,81 @@
+---
+title: "Long Term Logger Dry Trim"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+ - Cleanup long term logger .csv files to remove times when the probe was likely out of the water (NOTE: this data is for water quality analysis and un-trimmed long term logger .csv files can still be used to make time series figures)
+ - Only sites that had the probe out of the water (< 0.05m water level) need to be trimmed, other sites do not need to be trimmed but an extra copy will be made and renamed so all data is saved in the "Dry Trimmed" folder in GitHub to share with SRSC
+
+Clear the workspace and close all graphic devices (two right panels in RStudio).  Bring in necessary packages.
+
+```{r}
+rm(list = ls())
+graphics.off()
+library(tidyverse)
+```
+
+Check the working directory and change if needed.
+
+```{r}
+getwd()
+```
+This is the code for just those sites that need to be trimmed.  All other sites had their .csv copied into the "Dry Trimmed" folder.
+
+AC (HMSP Slough)
+
+```{r}
+AC_Level <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AC_Level_Logger_DateTime.csv")
+AC_Level_Slice <- subset(AC_Level, LEVEL > 0.05)
+# AC_Level_Slice %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Dry Trimmed\\AC_Level_Logger_DateTime_Trimmed.csv")
+```
+
+AH (Martin Slough)
+
+```{r}
+AH_Level <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AH_Level_Logger_DateTime.csv")
+AH_Level_Slice <- subset(AH_Level, LEVEL > 0.05)
+# AH_Level_Slice %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Dry Trimmed\\AH_Level_Logger_DateTime_Trimmed.csv")
+```
+
+AQ (Floral Lane Oxbow)
+
+```{r}
+AQ_Level <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\AQ_Level_Logger_DateTime.csv")
+AQ_Level_Slice <- subset(AQ_Level, LEVEL > 0.05)
+# AQ_Level_Slice %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Dry Trimmed\\AQ_Level_Logger_DateTime_Trimmed.csv")
+```
+
+D (West of Stevens)
+
+```{r}
+D_Level <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\D_Level_Logger_DateTime.csv")
+D_Level_Slice <- subset(D_Level, LEVEL > 0.05)
+# D_Level_Slice %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Dry Trimmed\\D_Level_Logger_DateTime_Trimmed.csv")
+```
+
+K (Minkler Lake)
+
+```{r}
+K_Level <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\K_Level_Logger_DateTime.csv")
+K_Level_Slice <- subset(K_Level, LEVEL > 0.05)
+# K_Level_Slice %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Dry Trimmed\\K_Level_Logger_DateTime_Trimmed.csv")
+```
+
+Y (Thunderbird Lane)
+
+```{r}
+Y_Level <- read_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Level Logger Data\\Y_Level_Logger_DateTime.csv")
+Y_Level_Slice <- subset(Y_Level, LEVEL > 0.05)
+# Y_Level_Slice %>%
+  # write_csv("..\\..\\Data\\Derived Data\\DateTime Long Term Logger Data\\Dry Trimmed\\Y_Level_Logger_DateTime_Trimmed.csv")
+```
+
